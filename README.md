@@ -51,7 +51,8 @@ npm install
 ### 🐋 Docker
 
 ```
-docker compose up
+docker compose build
+docker compose up -d
 ```
 
 ### ⚡️ Development
