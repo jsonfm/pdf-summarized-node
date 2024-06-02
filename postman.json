@@ -1,0 +1,437 @@
+{
+	"info": {
+		"_postman_id": "7d300f0c-e7c7-4dde-889a-8d66d22289ba",
+		"name": "BookWorm",
+		"description": "This project is a small chatbot for interrogating PDF documents with Gemini.\n\nThe initial premise is as follows:\n\nEach user can have multiple and varied conversations, each conversation can have multiple messages, and each conversation can be linked to a document.\n\nFrom here the various entities for the database are derived:\n\n- Users\n- Conversations\n- Messages\n- Documents",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26102345",
+		"_collection_link": "https://solar-equinox-965897.postman.co/workspace/0e3ef9e3-23ef-4b4c-bbf3-70db1e55fa85/collection/26102345-7d300f0c-e7c7-4dde-889a-8d66d22289ba?action=share&source=collection_link&creator=26102345"
+	},
+	"item": [
+		{
+			"name": "Documents",
+			"item": [
+				{
+					"name": "Get All Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/v1/documents?limit=100&offset=0",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Document",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/v1/documents/291e468a-56f8-4afa-9cd5-d0313b354e67",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents",
+								"291e468a-56f8-4afa-9cd5-d0313b354e67"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Here you can find the documents uploaded by users, and their respective vector references.\n\nIt is intended to be a knowledge base."
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@gmail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/v1/auth/login",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticates an existing user.\n\nIf the email is not registered it returns error,\n\nIf the fields do not follow the formatting conventions, it will return error."
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test2@gmail.com\",\n    \"password\": \"password\",\n    \"passwordConfirm\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/v1/auth/signup",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Registers a new user.\n\nIf the email is already registered it returns error,\n\nIf the fields do not follow the formatting conventions, it will return error."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for authentication"
+		},
+		{
+			"name": "Summarize",
+			"item": [
+				{
+					"name": "Upload PDF",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "pdf",
+									"type": "file",
+									"src": "/Users/admin/Documents/node/pdf-summary-api/testfiles/meditations.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/v1/summary/pdf",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"summary",
+								"pdf"
+							]
+						},
+						"description": "It lets you upload a pdf file, registers it in the database, and returns a summary, if the document already exists in the database it only returns the summary.\n\nIf the document is not of PDF type, it will return an error."
+					},
+					"response": []
+				},
+				{
+					"name": "Chat with PDF",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question\": \"Give me a summary of this document\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/v1/summary/chat/vector/{{VECTOR_ID}}/conversation/{{CONVERSATION_ID}}",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"summary",
+								"chat",
+								"vector",
+								"{{VECTOR_ID}}",
+								"conversation",
+								"{{CONVERSATION_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Interrogate PDF",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question\": \"talk me about 3 stoic principles\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/v1/summary/interrogate/vector/SljXqzSr",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"summary",
+								"interrogate",
+								"vector",
+								"SljXqzSr"
+							]
+						},
+						"description": "This endpoint allows you to interrogate a PDF document registered in the database, but without the context of a chat history."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Citation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/v1/summary/citation/vector/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"summary",
+								"citation",
+								"vector",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Create Conversation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/v1/conversations",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conversations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversations By User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/v1/conversations",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conversations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Conversation",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/v1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Get Messages By Conversation By User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/v1/messages/conversation/b0dc74f2-ccfd-4164-91bc-4b60a8e65002?limit=50&offset=0",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"messages",
+								"conversation",
+								"b0dc74f2-ccfd-4164-91bc-4b60a8e65002"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Message Into a Conversation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n      \"role\": \"HUMAN\",\n      \"content\": \"hello\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/v1/messages/conversation/b0dc74f2-ccfd-4164-91bc-4b60a8e65002",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"messages",
+								"conversation",
+								"b0dc74f2-ccfd-4164-91bc-4b60a8e65002"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ACCESS_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ACCESS_TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "CONVERSATION_ID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "VECTOR_ID",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

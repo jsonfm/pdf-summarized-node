@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  db:
+    hostname: 127.0.0.1
+    container_name: dbpg
+    image: ankane/pgvector
+    env_file: .env
+    ports:
+      - ${DB_PORT}:5432
+    restart: always
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db:/var/lib/postgres
+
+  app:
+    hostname: 127.0.0.1
+    depends_on:
+      - db
+    env_file: .env
+    build: ./
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:
